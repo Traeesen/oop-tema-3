@@ -91,7 +91,3 @@ Programul foloseste o ierarhie proprie de exceptii derivata din std::exception. 
 Exceptiile sunt aruncate in constructori sau la citirea fisierelor si tratate in main().
 
 
-Numele temei pt review: Pariuri sportive
-
-Nume coleg review: Bugeac Alexandru
-
