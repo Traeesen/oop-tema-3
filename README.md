@@ -49,54 +49,26 @@ Cele patru tipuri de angajati au fost implementate ca clase derivate ale unei cl
 
 Afisarea este realizata polimorfic prin operator<< care foloseste o functie virtuala display(...)
 
-Input
+  # Input
 
 Programul foloseste fisiere text pentru datele initiale.
 
-  * doctors.txt
+  ### doctors.txt
+Format:`nume specializare pacienti_pe_zi salariu`
+  ### nurses.txt
+Format: `nume specializare salariu`
+  ### admins.txt
+Format: `nume salariu`
+  ### operators.txt
+ Format: `nume salariu`
+  ### patients.txt
+ Format: `nume varsta lista_cabinete`
+  ### calls.txt
+ Format: `ora nume varsta probleme`
+  ### appointments.txt
+ Format: `ora nume varsta problema`
 
-Format:
-
-nume specializare pacienti_pe_zi salariu
-
-Exemplu:
-
-House doctor_familie 5 20000
-Doc chirurg 2 40000
-
-  * nurses.txt
-
-Format:
-
-nume specializare salariu
-
-  * admins.txt
-
-Format:
-
-nume salariu
-
-  * operators.txt
-
- nume salariu
-
-  * patients.txt
-
-Format:
-
-nume varsta lista_cabinete
-
-Exemplu:
-
-Ducu 19 doctor_familie laringolog chirurg
-
-  * calls.txt
-
-ora nume varsta probleme
-
-  * appointments.txt
-
-ora nume varsta problema
+# Exceptii
 
 Programul foloseste o ierarhie proprie de exceptii derivata din std::exception. Exceptiile sunt folosite pentru:
   * varste invalide
@@ -105,6 +77,7 @@ Programul foloseste o ierarhie proprie de exceptii derivata din std::exception. 
   * fisiere care nu pot fi deschise
 Exceptiile sunt aruncate in constructori sau la citirea fisierelor si tratate in main().
 
+ # Sabloane
 
 Programul foloseste urmatoarele sabloane (templates):
 
@@ -114,6 +87,7 @@ Aceasta este folosita pentru stocarea statisticilor generate in fiecare ora a si
 
   * Functia sablon `printCollection`, folosita pentru afisarea generica a colectiilor de obiecte.
 
+ # Design pattern-uri
 
 Programul foloseste urmatoarele design patterns:
 
