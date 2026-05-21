@@ -91,3 +91,17 @@ Programul foloseste o ierarhie proprie de exceptii derivata din std::exception. 
 Exceptiile sunt aruncate in constructori sau la citirea fisierelor si tratate in main().
 
 
+Programul foloseste urmatoarele sabloane (templates):
+
+  * Clasa sablon `WorkDay<T>`
+
+Aceasta este folosita pentru stocarea statisticilor generate in fiecare ora a simularii. Clasa poate memora orice tip de informatie orara, fara a fi nevoie de implementari separate pentru fiecare tip de raport.
+
+  * Functia sablon `printCollection`, folosita pentru afisarea generica a colectiilor de obiecte.
+
+
+Programul foloseste urmatoarele design patterns:
+
+  * Singleton Pattern prin clasa `Hospital`, pentru a exista o singura instanta centrala care gestioneaza intreaga simulare a spitalului.
+
+  * Factory Pattern prin clasa `StaffFactory`, pentru centralizarea logicii de creare a diferitelor tipuri de angajati derivate din `Staff`.
