@@ -120,3 +120,7 @@ Programul foloseste urmatoarele design patterns:
   * Singleton Pattern prin clasa `Hospital`, pentru a exista o singura instanta centrala care gestioneaza intreaga simulare a spitalului. Aceasta implementare rezulta intr-un main foarte usor de citit deoarece codul spitalului este structurat si refolosibil. 
 
   * Factory Pattern prin clasa `StaffFactory`, pentru centralizarea logicii de creare a diferitelor tipuri de angajati derivate din `Staff`. In loc sa punem user-ul sa instantieze clasele exact cum trebuie instantiate (make_shared poate fi o interfata complicata, pe care am vrea sa o ascundem. In proiecte mai complexe pot exista mai multe chichite de genul pe care vrem sa le ascundem pentru usurinta noastra/user-ului.)
+
+# Bibliografie
+
+https://refactoring.guru/design-patterns/cpp
