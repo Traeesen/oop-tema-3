@@ -9,7 +9,10 @@ Hospital::Hospital() //privat
     loadDoctors("doctors.txt");
     loadNurses("nurses.txt");
     loadAdmins("admins.txt");
+    loadEmergencyOperators("operators.txt");
     loadPatients("patients.txt");
+    loadCalls("calls.txt");
+    loadAppointments("appointments.txt");
 }
 
 Hospital& Hospital::getInstance()
@@ -128,40 +131,158 @@ void Hospital::loadPatients(const std::string& filename)
     std::ifstream fin(filename);
     if(!fin.is_open()) throw FileOpenException(filename);
 
+    int hour = 0;
+
+    while(true)
+    {
+        std::shared_ptr<Patient> p = readPatientFromLine(fin, false, hour);
+
+        if(p == nullptr)
+            break;
+
+        waitingQueue.push_back(p);
+    }
+}
+
+std::shared_ptr<Patient> Hospital::readPatientFromLine(std::ifstream& fin, bool hasHour, int& hour)
+{
     std::string name;
     int age;
 
-    while(fin >> name >> age)
+    if(hasHour)
     {
-        std::shared_ptr<Patient> p = std::make_shared<Patient>(name, age);
+        if(!(fin >> hour >> name >> age))
+            return nullptr;
+    }
+    else
+    {
+        if(!(fin >> name >> age))
+            return nullptr;
+    }
 
-        std::string problems;
-        std::getline(fin, problems);
+    std::shared_ptr<Patient> p = std::make_shared<Patient>(name, age);
 
-        std::string word;
+    std::string problems;
+    std::getline(fin, problems);
 
-        for(size_t i = 0; i < problems.size(); i++)
+    std::string word;
+
+    for(size_t i = 0; i < problems.size(); i++)
+    {
+        if(problems[i] == ' ')
         {
-            if(problems[i] == ' ')
+            if(!word.empty())
             {
-                if(!word.empty())
-                {
-                    p->addProblem(word);
-                    word.clear();
-                }
+                p->addProblem(word);
+                word.clear();
             }
-            else
+        }
+        else
+        {
+            word += problems[i];
+        }
+    }
+
+    if(!word.empty())
+        p->addProblem(word);
+
+    return p;
+}
+
+void Hospital::loadEmergencyOperators(const std::string& filename)
+{
+    std::ifstream fin(filename);
+    if(!fin.is_open()) throw FileOpenException(filename);
+
+    std::string name;
+    int salary;
+
+    while(fin >> name >> salary)
+    {
+        std::shared_ptr<EmergencyOperator> e = StaffFactory::createEmergencyOperator(name, salary);
+        staff.push_back(e);
+    }
+}
+
+void Hospital::loadCalls(const std::string& filename)
+{
+    std::ifstream fin(filename);
+    if(!fin.is_open()) throw FileOpenException(filename);
+
+    int hour = 0;
+
+    while(true)
+    {
+        std::shared_ptr<Patient> p = readPatientFromLine(fin, true, hour);
+
+        if(p == nullptr)
+            break;
+
+        p->setEmergency(true);
+
+        if(hour >= 1 && hour <= 8)
+            callsByHour[hour].push_back(p);
+    }
+}
+
+void Hospital::loadAppointments(const std::string& filename)
+{
+    std::ifstream fin(filename);
+    if(!fin.is_open()) throw FileOpenException(filename);
+
+    int hour = 0;
+
+    while(true)
+    {
+        std::shared_ptr<Patient> p = readPatientFromLine(fin, true, hour);
+
+        if(p == nullptr)
+            break;
+
+        p->setAppointment(true);
+
+        if(hour >= 1 && hour <= 8)
+            appointmentsByHour[hour].push_back(p);
+    }
+}
+
+void Hospital::processCalls(int hour)
+{
+    for(int i = 0; i < callsByHour[hour].size(); i++)
+    {
+        emergencyCallsQueue.push_back(callsByHour[hour][i]);
+        std::cout << "Emergency call received for " << callsByHour[hour][i]->getName() << ".\n";
+    }
+}
+
+void Hospital::processAppointments(int hour)
+{
+    for(int i = 0; i < appointmentsByHour[hour].size(); i++)
+    {
+        std::shared_ptr<Patient> patient = appointmentsByHour[hour][i];
+
+        if(patient->getProblems().size() == 0)
+            continue;
+
+        std::string neededDepartment = patient->getProblems()[0];
+
+        bool found = false;
+
+        for(int j = 0; j < departments.size(); j++)
+        {
+            if(departments[j].getName() == neededDepartment)
             {
-                word += problems[i];
+                departments[j].addPatient(patient);
+                found = true;
+                std::cout << "Appointment patient " << patient->getName() << " went directly to " << neededDepartment << ".\n";
+                break;
             }
         }
 
-        if(!word.empty())
+        if(!found)
         {
-            p->addProblem(word);
+            std::cout << "Appointment patient " << patient->getName() << " could not be sent to " << neededDepartment << " because the department does not exist.\n";
         }
-
-        waitingQueue.push_back(p);
     }
 }
 
@@ -176,8 +297,10 @@ void Hospital::simulateDay()
         std::vector<std::string> inactiveThisHour;
         int moneyWastedThisHour = 0;
 
-        for(int i = size - 1; i >= 0; i--)
-            staff[i]->doWork(waitingQueue, departments, moneyWastedThisHour, inactiveThisHour);
+        processCalls(hour);
+        processAppointments(hour);
+
+        for(int i = size - 1; i >= 0; i--) staff[i]->doWork(waitingQueue, departments, emergencyCallsQueue, moneyWastedThisHour, inactiveThisHour);
 
         inactiveStaffPerHour.addHourResult(inactiveThisHour);
         moneyWastedPerHour.addHourResult(moneyWastedThisHour);

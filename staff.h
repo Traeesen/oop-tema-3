@@ -39,7 +39,7 @@ class Staff
         Staff& operator=(const Staff& other);
 
         //metoda virtuala
-        virtual void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) = 0;
+        virtual void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) = 0;
 };
 
 class Doctor : public Staff 
@@ -63,7 +63,7 @@ class Doctor : public Staff
         Doctor(const Doctor& other);
 
         //override
-        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) override;
+        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) override;
 
         //operatori
         void display(std::ostream& os) const override;
@@ -81,7 +81,7 @@ class Nurse : public Staff
         Nurse(const Nurse& other);
 
         // override
-        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) override;
+        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) override;
 
         //operatori
         void display(std::ostream& os) const override;
@@ -99,9 +99,24 @@ class Admin : public Staff
         Admin(const Admin& other);
 
         // override
-        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) override;
+        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) override;
 
         // operatori
         void display(std::ostream& os) const override;
         Admin& operator=(const Admin& other);
+};
+
+class EmergencyOperator : public Staff
+{
+    int callsHandled = 0;
+
+    public:
+        EmergencyOperator();
+        EmergencyOperator(const std::string& name, int salary);
+        EmergencyOperator(const EmergencyOperator& other);
+
+        void doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour) override;
+
+        void display(std::ostream& os) const override;
+        EmergencyOperator& operator=(const EmergencyOperator& other);
 };

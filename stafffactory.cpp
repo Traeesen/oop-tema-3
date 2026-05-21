@@ -14,3 +14,8 @@ std::shared_ptr<Admin> StaffFactory::createAdmin(const std::string& name, int sa
 {
     return std::make_shared<Admin>(name, salary);
 }
+
+std::shared_ptr<EmergencyOperator> StaffFactory::createEmergencyOperator(const std::string& name, int salary)
+{
+    return std::make_shared<EmergencyOperator>(name, salary);
+}

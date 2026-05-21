@@ -8,6 +8,8 @@ class Patient
     std::string name;
     int age;
     std::vector<std::string> problems;
+    bool emergency = false;
+    bool appointment = false;
     static int nextId;
     const int id;
 
@@ -22,6 +24,12 @@ public:
     void addProblem(const std::string& newProblem);
     std::vector<std::string> getProblems() const;
     void removeFirstProblem();
+
+    void setEmergency(bool value);
+    bool isEmergency() const;
+
+    void setAppointment(bool value);
+    bool isAppointment() const;
 
     int getId() const;
 

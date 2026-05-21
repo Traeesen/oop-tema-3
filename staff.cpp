@@ -109,7 +109,7 @@ void Doctor::display(std::ostream& os) const //afisarea virtuala prin interfata 
 }
 
 //metoda virtuala
-void Doctor::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour)
+void Doctor::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour)
 {
     for (int i = 0; i < departments.size(); i++)
     {
@@ -201,7 +201,7 @@ void Nurse::display(std::ostream& os) const //afisarea virtuala prin interfata n
 
 
 //metoda virtuala
-void Nurse::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour)
+void Nurse::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour)
 {
     for (int i = 0; i < departments.size(); i++)
     {
@@ -244,7 +244,7 @@ void Admin::display(std::ostream& os) const //afisarea virtuala prin interfata n
 }
 
 //metoda virtuala
-void Admin::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour)
+void Admin::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour)
 {
     int patientsToRedirect = 1;
 
@@ -294,5 +294,54 @@ Admin& Admin::operator=(const Admin& other)
 {
     if (this == &other) return *this;
     Staff::operator=(other);
+    return *this;
+}
+
+// -- operator urgente --
+
+EmergencyOperator::EmergencyOperator() : Staff()
+{
+}
+
+EmergencyOperator::EmergencyOperator(const std::string& name, int salary) : Staff(name, salary)
+{
+}
+
+EmergencyOperator::EmergencyOperator(const EmergencyOperator& other) : Staff(other), callsHandled(other.callsHandled)
+{
+}
+
+void EmergencyOperator::display(std::ostream& os) const
+{
+    os << "Emergency Operator: " << getName() << ", Salary: " << getSalary();
+    os << ", Calls handled today: " << callsHandled;
+}
+
+void EmergencyOperator::doWork(std::vector<std::shared_ptr<Patient>>& waitingInQueue, std::vector<Department>& departments, std::vector<std::shared_ptr<Patient>>& emergencyCallsQueue, int& moneyWastedThisHour, std::vector<std::string>& inactiveThisHour)
+{
+    if(emergencyCallsQueue.size() == 0)
+    {
+        inactiveThisHour.push_back(getName());
+        moneyWastedThisHour += getSalary() / 20;
+        std::cout << getName() << " had no emergency calls this hour.\n";
+        return;
+    }
+
+    std::shared_ptr<Patient> patient = emergencyCallsQueue[0];
+    emergencyCallsQueue.erase(emergencyCallsQueue.begin());
+
+    patient->setEmergency(true);
+    waitingInQueue.insert(waitingInQueue.begin(), patient);
+
+    callsHandled++;
+
+    std::cout << getName() << " handled emergency call for " << patient->getName() << " and sent the patient to admin priority queue.\n";
+}
+
+EmergencyOperator& EmergencyOperator::operator=(const EmergencyOperator& other)
+{
+    if (this == &other) return *this;
+    Staff::operator=(other);
+    callsHandled = other.callsHandled;
     return *this;
 }

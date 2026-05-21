@@ -5,6 +5,26 @@
 
 //setter-e/getter-e
 
+void Patient::setEmergency(bool value)
+{
+    emergency = value;
+}
+
+bool Patient::isEmergency() const
+{
+    return emergency;
+}
+
+void Patient::setAppointment(bool value)
+{
+    appointment = value;
+}
+
+bool Patient::isAppointment() const
+{
+    return appointment;
+}
+
 void Patient::setName(const std::string& newName)
 {
     name = newName;
@@ -53,17 +73,15 @@ int Patient::getId() const
 
 int Patient::nextId = 1;
 
-Patient::Patient() : name(""), age(0), id(nextId++)
+Patient::Patient() : name(""), age(0), id(nextId++) {};
+
+Patient::Patient(const Patient& other) : name(other.name), age(other.age), problems(other.problems), emergency(other.emergency), appointment(other.appointment), id(nextId++)
 {
 }
 
 Patient::Patient(const std::string& name, const int age) : name(name), age(age), id(nextId++)
 {
     if(age < 0 || age > 120) throw InvalidAgeException();
-}
-
-Patient::Patient(const Patient& other) : name(other.name), age(other.age), problems(other.problems), id(nextId++)
-{
 }
 
 //destructor

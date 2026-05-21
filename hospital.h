@@ -11,6 +11,9 @@ class Hospital
 {
     std::vector<Department> departments;
     std::vector<std::shared_ptr<Patient>> waitingQueue;
+    std::vector<std::shared_ptr<Patient>> emergencyCallsQueue;
+    std::vector<std::shared_ptr<Patient>> callsByHour[9];
+    std::vector<std::shared_ptr<Patient>> appointmentsByHour[9];
     std::vector<std::shared_ptr<Staff>> staff;
 
     WorkDay<int> moneyWastedPerHour;
@@ -21,14 +24,18 @@ class Hospital
     void loadDoctors(const std::string& filename);
     void loadNurses(const std::string& filename);
     void loadAdmins(const std::string& filename);
+    void loadEmergencyOperators(const std::string& filename);
     void loadPatients(const std::string& filename);
+    void loadCalls(const std::string& filename);
+    void loadAppointments(const std::string& filename);
+    std::shared_ptr<Patient> readPatientFromLine(std::ifstream& fin, bool hasHour, int& hour);
+    void processAppointments(int hour);
+    void processCalls(int hour);
 
 public:
-    // nu poate fi copiat
     Hospital(const Hospital&) = delete;
     Hospital& operator=(const Hospital&) = delete;
 
-    // singurul mod de a accesa
     static Hospital& getInstance();
 
     void addDepartment(const Department& department);

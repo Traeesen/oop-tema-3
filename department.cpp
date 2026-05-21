@@ -43,6 +43,23 @@ void Department::addEmployee(std::shared_ptr<Staff> e)
 
 void Department::addPatient(std::shared_ptr<Patient> p)
 {
+    if(p->isEmergency())
+    {
+        patients.insert(patients.begin(), p);
+        return;
+    }
+
+    if(p->isAppointment())
+    {
+        int position = 0;
+
+        while(position < patients.size() && patients[position]->isEmergency())
+            position++;
+
+        patients.insert(patients.begin() + position, p);
+        return;
+    }
+
     patients.push_back(p);
 }
 
