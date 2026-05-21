@@ -1,0 +1,5 @@
+House doctor_familie 5 20000
+Strange timp 100 25000
+Doc chirurg 2 40000
+George laringolog 1 20000
+Gigel stomatolog 1 15000

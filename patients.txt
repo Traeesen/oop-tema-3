@@ -1,0 +1,5 @@
+Ducu 19 doctor_familie laringolog chirurg
+Tanase 19 laringolog chirurg
+Iulian 19 stomatolog chirurg
+Bugeac 62 doctor_familie
+Madalin 20 doctor_familie psiholog
