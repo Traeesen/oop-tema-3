@@ -1,7 +1,3 @@
-/*
-Numele temei pt review: Pariuri sportive
-Nume coleg review: Bugeac Alexandru
-*/
 #include <fstream>
 #include <cstring>
 #include <vector>
