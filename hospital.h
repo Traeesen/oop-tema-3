@@ -6,6 +6,7 @@
 #include "department.h"
 #include "patient.h"
 #include "workday.h"
+#include "observer.h"
 
 class Hospital
 {
@@ -31,6 +32,7 @@ class Hospital
     std::shared_ptr<Patient> readPatientFromLine(std::ifstream& fin, bool hasHour, int& hour);
     void processAppointments(int hour);
     void processCalls(int hour);
+    std::vector<std::shared_ptr<HospitalObserver>> observers;
 
 public:
     Hospital(const Hospital&) = delete;
@@ -43,6 +45,10 @@ public:
     void addPatient(std::shared_ptr<Patient> patient);
     std::vector<std::shared_ptr<Patient>>& getWaitingQueue();
 
+    void addObserver(std::shared_ptr<HospitalObserver> observer);
+    void notifyObservers(const std::string& message);
+
     void simulateDay();
     void printFinalReport() const;
+    
 };

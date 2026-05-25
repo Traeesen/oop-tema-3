@@ -24,6 +24,8 @@ int main()
     {
         Hospital& hospital = Hospital::getInstance();
 
+        hospital.addObserver(std::make_shared<ConsoleObserver>());
+
         hospital.simulateDay();
         hospital.printFinalReport();
 

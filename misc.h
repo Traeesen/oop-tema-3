@@ -12,3 +12,9 @@ void printCollection(const std::vector<T>& items)
         std::cout << item << ' ';
     }
 }
+
+template<typename T>
+void printElement(const T item)
+{
+    std::cout<<item;
+}

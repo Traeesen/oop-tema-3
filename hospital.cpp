@@ -3,6 +3,7 @@
 #include "exceptions.h"
 #include <fstream>
 #include <iostream>
+#include <string>
 
 Hospital::Hospital() //privat
 {
@@ -251,7 +252,7 @@ void Hospital::processCalls(int hour)
     for(int i = 0; i < callsByHour[hour].size(); i++)
     {
         emergencyCallsQueue.push_back(callsByHour[hour][i]);
-        std::cout << "Emergency call received for " << callsByHour[hour][i]->getName() << ".\n";
+        notifyObservers("Emergency call received for " + callsByHour[hour][i]->getName() + ".");
     }
 }
 
@@ -286,11 +287,21 @@ void Hospital::processAppointments(int hour)
     }
 }
 
+void Hospital::addObserver(std::shared_ptr<HospitalObserver> observer)
+{
+    observers.push_back(observer);
+}
+
+void Hospital::notifyObservers(const std::string& message)
+{
+    for(auto& observer : observers) observer->onHospitalEvent(message);
+}
+
 void Hospital::simulateDay()
 {
     for(int hour = 1; hour <= 8; hour++)
     {
-        std::cout << '\n' << "----------- HOUR " << hour << " -----------\n";
+        notifyObservers( "\n----------- HOUR " + std::to_string(hour) + std::string(" -----------\n"));
 
         int size = staff.size();
 
@@ -307,7 +318,7 @@ void Hospital::simulateDay()
 
         if(waitingQueue.size() == 0)
         {
-            std::cout << "\nALL PATIENTS HAVE BEEN TREATED\n";
+            notifyObservers("\nALL PATIENTS HAVE BEEN TREATED\n");
 
             int unusedHours = 8 - hour;
 
@@ -320,7 +331,7 @@ void Hospital::simulateDay()
 
                 int wastedMoney = (totalSalary * unusedHours) / 20;
 
-                std::cout << "Recommendation: The hospital finished " << unusedHours << " hour(s) early and wasted approximately " << wastedMoney << " ron in salaries. Consider reducing staff or accepting more patients.\n";
+                notifyObservers(std::string("Recommendation: The hospital finished ") + std::to_string(unusedHours) + " hour(s) early and wasted approximately " + std::to_string(wastedMoney) + " ron in salaries. Consider reducing staff or accepting more patients.\n");
             }
 
             break;
@@ -333,7 +344,7 @@ void Hospital::simulateDay()
 
         int estimatedLoss = untreatedPatients * 1000;
 
-        std::cout << "\nRecommendation: " << untreatedPatients << " patient(s) were not treated before the hospital closed. The hospital likely needs more doctors, nurses, or administrators in overloaded departments. Alternatively, there may be departments that don't exist.";
+        notifyObservers(std::string("\nRecommendation: ") + std::to_string(untreatedPatients) + " patient(s) were not treated before the hospital closed. The hospital likely needs more doctors, nurses, or administrators in overloaded departments. Alternatively, there may be departments that don't exist.");
     }
 }
 
@@ -349,6 +360,7 @@ void Hospital::printFinalReport() const
     std::cout << "\nDEPARTMENTS:\n";
     printCollection(departments);
 
-    moneyWastedPerHour.printReport("Money wasted per hour");
-    inactiveStaffPerHour.printReportCollection("Inactive staff per hour");
+    moneyWastedPerHour.printReport("Money wasted per hour", printElement<int>);
+
+    inactiveStaffPerHour.printReport("Inactive staff per hour", printCollection<std::string>);
 }
