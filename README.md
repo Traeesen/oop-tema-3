@@ -87,13 +87,17 @@ Aceasta este folosita pentru stocarea statisticilor generate in fiecare ora a si
 
   * Functia sablon `printCollection`, folosita pentru afisarea generica a colectiilor de obiecte.
 
+  * Metoda sablon `printReport`, care admite orice functie de printare ca parametru pentru a putea printa mai multe tipuri de date.
+
  # Design pattern-uri
 
 Programul foloseste urmatoarele design patterns:
 
-  * Singleton Pattern prin clasa `Hospital`, pentru a exista o singura instanta centrala care gestioneaza intreaga simulare a spitalului. Aceasta implementare rezulta intr-un main foarte usor de citit deoarece codul spitalului este structurat si refolosibil. 
+  * Singleton prin clasa `Hospital`, pentru a exista o singura instanta centrala care gestioneaza intreaga simulare a spitalului. Aceasta implementare rezulta intr-un main foarte usor de citit deoarece codul spitalului este structurat si refolosibil. 
 
-  * Factory Pattern prin clasa `StaffFactory`, pentru centralizarea logicii de creare a diferitelor tipuri de angajati derivate din `Staff`. In loc sa punem user-ul sa instantieze clasele exact cum trebuie instantiate (make_shared poate fi o interfata complicata, pe care am vrea sa o ascundem. In proiecte mai complexe pot exista mai multe chichite de genul pe care vrem sa le ascundem pentru usurinta noastra/user-ului.)
+  * Observer prin clasele `HospitalObserver` si `onHospitalEvent`, pentru a centraliza si simplifica "evenimente". Practic interfata de observer ne ofera sa ne abonam la un alt obiect si sa asteptam anumite semnale trimise de acel obiect, care ne da detalii despre eveniment. Mai multe obiecte pot fi abonate la un al obiect in acelasi timp.
+
+  * Factory prin clasa `StaffFactory`, pentru centralizarea logicii de creare a diferitelor tipuri de angajati derivate din `Staff`. In loc sa punem user-ul sa instantieze clasele exact cum trebuie instantiate (make_shared poate fi o interfata complicata, pe care am vrea sa o ascundem. In proiecte mai complexe pot exista mai multe chichite de genul pe care vrem sa le ascundem pentru usurinta noastra/user-ului.)
 
 # Bibliografie
 
